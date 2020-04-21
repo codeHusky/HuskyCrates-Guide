@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+
+	<title>HuskyCrates Setup Guide</title>
+
+	<link rel="stylesheet" type="text/css" href="style.css">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" i>
+	<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+	<script src="main.js"></script>
+</head>
+<body>
+	<div class="container">
+		<h1>HuskyCrates Setup Guide</h1>
+		<div>Your one-stop shop for everything you need to know, maybe.<br><b>Last Updated: v2.0.0RC3</b></div>
+		<hr/>
+		<div class="row">
+			<div class="col-12 col-lg-3">
+				<div class="p-1">
+					<h5 class="mb-2">Table of Contents</h5>
+					<hr class="mb-2" />
+					<ul class="list-group">
+						<a class="list-group-item" href="#install">
+							Installation
+						</a>
+						<a class="list-group-item" href="#settings">
+							Plugin Settings
+						</a>
+						<a class="list-group-item" href="#basiccrate">
+							Your First Crate
+						</a>
+						<a class="list-group-item" href="#slotconfig">
+							Your First Crate
+						</a>
+					</ul>
+				</div>
+			</div>
+			<div class="col-12 col-lg-9">
+				<p class="step note">
+					These docs are currently a work-in-progress and are not yet complete. There may be sections referenced in the text that do not yet exist. Please see the <a href="https://discord.gg/FSETtcx" target="_blank">support Discord</a> if you need additional assistance.
+				</p>
+				<div id="install" class="step">
+					<h3>Installing HuskyCrates</h3>
+					<hr/>
+					<p>To install HuskyCrates, you'll need to <b>download the plugin</b> from its <a target="_blank" href="https://ore.spongepowered.org/codeHusky/HuskyCrates/versions">Ore listing.</a> You will also need to download the <b>latest version of HuskyUI</b>, which can be found <a target="_blank" href="https://ore.spongepowered.org/codeHusky/HuskyUI/versions">here</a>.</p>
+					
+					<p>Once downloaded, place both <code>.jar</code> files into the <code>/mods</code> folder of your server. <b>Make sure you have a recent version of Sponge</b>, otherwise you may run into problems. After a restart, you should be greeted by these files in your <code>/config/huskycrates/</code> folder.
+					<br>Apart from the folders, you have <code>huskycrates.conf</code>, which is basically where plugin-wide "settings" are controlled. <b>You do not put crates in <code>huskycrates.conf</code>.</b>
+					</p>
+					<img src="newserverfolder.png"/>
+
+					<p>Inside of the <code>/crates/</code> folder, you'll see these files. <code>example.crate</code> is an example crate file with some basic settings pre-configured for you. <code>keys.conf</code> is for advanced key configuration, which will be touched on later</p>
+					<img src="newcratefolder.png"/>
+
+					<p>Inside of <code>/storage/</code>, you'll find these files. 
+
+					<br><code>data.mv.db</code> is the storage file for the local database HuskyCrates uses to keep track of keys and crate positions. You shouldn't need to edit this, but there might be a situation where you need to delete it.
+
+					<br><code>dupealert.log</code> is a text-based log of every duplication event on the server. You can use this to review reported key duplications, and potentially punish cheaters.
+
+					<br><code>generatedinventories.conf</code> is a list of inventories of items converted into valid <b>item nodes</b> with in-game commands. 
+
+					<br><code>generateditems.conf</code> is very similar, except these are just singular valid <b>item nodes</b> generated with commands in-game.</p>
+					<img src="newstoragefolder.png"/>
+					<p>Upon logging into your server, you should be able to run commands like <code>/hc block example</code> and <code>/hc key example</code>, as well as use this example crate in-game. If everything's working, you're in good shape.</p>
+				</div>
+				<div class="step" id="settings">
+					<h3>Plugin Settings</h3>
+					<hr/>
+					<p>Once done installing, check your settings in <code>huskycrates.conf</code> to make sure they're set to what you want.</p>		
+<pre><code>forceCrateCMD=true
+secureKeys=true
+virtualkeydatabase {
+    database=huskycrates
+    host="127.0.0.1"
+    password=""
+    port=3306
+    type=mysql
+    useRemoteDatabase=false
+    username=root
+}</code></pre>
+					<p><code>forceCrateCMD</code> controls whether the plugin will force ownership over the <code>/crate</code> command. If you're running into incompatibility issues with other plugins, feel free to set this to <code>false</code>, otherwise leave it <code>true</code></p>
+					<p><code>secureKeys</code> controls whether the plugin will check if keys are duplicated or not. You typically shouldn't disable this unless you have a <b>specific</b> use-case where it's neccesary. If you're having trouble with false dupe reports, <a href="https://discord.gg/FSETtcx" target="_blank">join the support Discord</a>.</p>
+					<p>You should leave the <code>virtualkeydatabase</code> settings alone unless you know what you're doing. For experienced owners however, you can enable an external database by setting <code>useRemoteDatabase</code> to <code>true</code>, assuming you hadn't already figured that out. There currently isn't support for custom table names or anything, but that could come in a later update assuming the demand is there.</p>
+				</div>
+				<div class="step" id="basiccrate">
+					<h3>Your First Crate</h3>
+					<hr/>
+					<p>For the sake of simplicity, we're gonna start off by using <code>/hc gencrate</code> to generate a template crate. Later on, I'll run you through the basics of writing configs yourself. For now, to help better demonstrate how the configs work, we'll be doing it in-game.</p>
+					<p>Start your test server, log in, and make sure you have the <code>huskycrates.admin</code> permission. If you don't, you won't be able to continue. Once you've sorted permissions, collect some items in your inventory. Here's what I collected. The helmet has Protection 1, and the potion is an Instant Damage potion. The sword has been renamed as "Cool Sword".</p>
+					<img src="gencrateitems.png"/>
+					<p>Now that I have my items, I'll run <code>/hc gencrate basicCrate inventory</code>. You could replace <code>inventory</code> with <code>item</code> if you wanted just the held item to be in the crate, but this is much faster for various custom items.</p>
+
+					<p class="note">Feel free to run <code>/hc reload</code> at any time to test your generated crate with the <code>/hc block</code> and <code>/hc key</code> commands. Seeing it in action will help better understand the text in the configuration file as we continue.</p>
+
+					<p>Here's the output of <code>/hc gencrate</code> for me. First in chat...</p>
+					<img src="gencratechat.png"/>
+					<p>Then in <code>/config/huskycrates/crates/</code>. You can see it created <code>basicCrate.crate</code> for us.</p>
+					<img src="gencratefolder.png"/>
+					<p>Opening that, we'll see a very long file that looks something like this. at the beginning</p>
+					<img src="gencratefile.png"/>
+
+					<p class="note"><code>/hc gencrate</code> and other <code>gen</code>-prefixed commands are very liberal with how they store item data. We will see a lot of duplicate data throughout the config. This is not neccesary for you to do when typing your own configs up manually, as anything within a <code>nbt { }</code> node will be overriden by HuskyCrate's <b>item node</b> options.</p>
+					<p>Now is a good time to run through most of the notable parts of the crate configuration file format, so let's do that.</p>
+					<p><code>free</code> controls if the crate can be used for free (without a key) or not. You can enforce a cooldown (in seconds) between crate uses by adding <code>cooldownSeconds=#</code>, where <code>#</code> is the number of seconds between possible uses.</p>
+					<p>Inside of <code>hologram { }</code>, we find <code>lines=[ ]</code>. You can edit the existing lines to your heart's content. If you want to add a line, you need to add a <code>,</code> after the last quoted hologram text, then (in quotes) add your next line.</p>
+					<p>For example, the yellow highlighted text here is what you would add following my instructions.</p>
+<pre><code>lines=[
+    "&abasicCrate"<span class="highlight">,
+    "new line"</span>
+]</code></pre>
+					<p class="note">You should keep this formatting in mind when adding to any nodes with <code>[ ]</code> square brackets. These are referred to as "arrays" or "lists".</p>
+					<p>An important part of your crate is the <code>localKey</code>, at least for now. This node follows the <b>item node</b> layout, so any items you generate with <code>/hc genitem</code> should work here just fine. <code>name</code> and <code>id</code> are fairly self-explanatory.</p>
+					<p>The next major note would be <code>previewable</code>. If you want users to be able to right-click (or punch) your crates to get a preview of all of your rewards, you would want this set to <code>true</code>. Otherwise, if you want to prevent this, set it to <code>false</code>. <b>There is no permission required for this.</b></p>	
+					<p>Scrolling past the long list of items, you'll find <code>useLocalKey</code>. You should keep this true for now. We'll cover advanced key configuration later.</p>
+					<p>Within <code>viewConfig { }</code>, you'll find a variety of attributes and values. As generated, the three options are for the <code>spinner</code> <code>viewType</code>.</p>
+					<p><code>tickDelayMultiplier</code> is how much to multiply the current tick delay by. The delay starts at <code>1</code> tick per shift of the spinner items. Every time the spinner moves, the delay is multiplied by <code>tickDelayMultiplier</code> to slow the spinner down. Every tick is roughly 50 milliseconds, so <code>tickDelayMultiplier=1.025</code> would result in ticks roughly a third of a second long before stopping at <code>ticksToSelection=75</code> ticks. These two numbers are the main deciding factors in how long the spin animation of your crate takes.</p>
+					<p><code>ticksToSelectionVariance</code> defines by how much to relatively adjust your <code>ticksToSelection</code> by every time the crate is used in either the negative or positive direction. Set this to <code>0</code> if you want to have a consistent spin time.</p>
+					<p>Now outside of the <code>viewConfig { }</code> block, the only option left is <code>viewType</code>. Currently, the only supported <b>viewTypes</b> would be <code>spinner</code>, which is the normal spinning item view, <code>simple</code>, which just shows the user what they won without any sort of prior animation, and <code>instant</code>, which has no inventory view and just randomly selects a slot.</p>
+					<p class="note">Please note that the server will not error if you configure your <code>viewType</code> as <code>roulette</code>, but the view type is currently not finished. It will simply tell users that the view type is not yet supported and do nothing. Don't use the <code>roulette</code> view type yet.</p>
+					<p>Now, we're onto the more complicated part.</p>
+				</div>
+				<div class="step" id="slotconfig">
+					<h2>Slot Configuration</h2>
+					<hr>
+					<p>Every crate has <code>slots</code>. Think of a crate like a slot machine. The wheels spin before landing on a particular icon, or in this case, slot. While most slot machines have 3 or more "wheels", we only have one, hence "spinner". Our slots are our items we put into our inventory earlier.</p>
+					<p>Before we dive into the intricacies of the <b>item node</b> format, let's touch on how HuskyCrates handles rewards and random slot selection.</p>
+					<p>Once a user's key has been consumed, the result of a crate spin has already been selected (the spinning is just for show, as you probably figured). How things appear to the user depend on your configuration earlier, but how often items are selected depends on chance. I don't mean random chance though, I mean weighted chance.</p>
+					<p>The <code>chance</code> attribute defines how "heavy" a particular item is. Heavier items appear less often than lighter items. The bigger the chance value, the heavier an object is, and vise versa.</p>
+					<p>If you want to calculate the actual probability of getting any given item out of your crate, add up all of your slot's <code>chance</code> values, then divide whatever slot you want to test's <code>chance</code> value by that sum. Then, multiply by 100. That gives you the theoretical percent probability of getting that item on any given spin.</p>
+					<p>Moving onto what players get for spending keys, we have <code>rewards</code>. For the sake of simplicity, we will be assuming that we only want to give out one reward per spin, not multiple.</p>
+					<p>By default, our <code>rewards=[ ]</code> array on every slot is this.</p>
+<pre><code>rewards=[
+    {
+        type=item
+    }
+]</code></pre>
+					<p>If we wanted to add another, we could do that like so.</p>
+<pre><code>rewards=[
+    {
+        type=item
+    }<span class="highlight">,
+    {
+    	type=servercommand
+    	data="say Hello server!"
+    }</span>
+]</code></pre>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
